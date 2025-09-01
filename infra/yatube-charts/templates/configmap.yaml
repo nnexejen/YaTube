@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: {{ .Release.Namespace }}
+data:
+  DB_HOST: {{ .Values.backend.dbHost }}
+  DB_PORT: "{{ .Values.backend.dbPort }}"
+  DB_NAME: {{ .Values.backend.dbName }}
+  ALLOWED_HOSTS: "{{ .Values.backend.env.ALLOWED_HOSTS }}"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: {{ .Release.Namespace }}
+data:
+  default.conf: |
+    server {
+      listen 80;
+      server_name {{ .Values.ingress.host }};
+
+      location /static/ {
+        alias /var/html/static/;
+        expires 30d;
+      }
+
+      location /media/ {
+        alias /var/html/media/;
+        expires 30d;
+      }
+
+      location / {
+        proxy_pass http://backend:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      }
+    }  

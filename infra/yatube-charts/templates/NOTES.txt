@@ -1,0 +1,2 @@
+Open YaTube: https://yatube.local/
+Ignore the certificate warning.
