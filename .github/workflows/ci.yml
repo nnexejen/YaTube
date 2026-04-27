@@ -105,24 +105,34 @@ jobs:
             type=sha,prefix=,format=short
             type=raw,value=latest,enable={{is_default_branch}}
 
-      - name: Build and push
+      # Шаг 1: Собрать образ БЕЗ пуша
+      - name: Build Docker image (no push)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./yatube
+          file: ./yatube/Dockerfile
+          push: false  # ← Только сборка
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/yatube:${{ github.sha }}
+          load: true   # ← Загрузить в Docker daemon для сканирования
+
+      # Шаг 2: Сканировать локальный образ
+      - name: Run Trivy scanner (pre-push)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/yatube:${{ github.sha }}
+          format: 'table'
+          exit-code: '1'  # ← Блокировать CI при уязвимостях
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'
+
+      # Шаг 3: Запушить только если Trivy прошёл
+      - name: Push to DockerHub
         uses: docker/build-push-action@v5
         with:
           context: ./yatube
           file: ./yatube/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
-          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/yatube:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/yatube:buildcache,mode=max
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/yatube:${{ github.sha }}
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: true
-          severity: 'CRITICAL,HIGH'
 
   coverage:
     name: Upload Coverage to Codecov
