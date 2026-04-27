@@ -1,8 +1,13 @@
-# Yatube
+# YaTube
+
+[![CI](https://github.com/nnexejen/YaTube/actions/workflows/ci.yml/badge.svg)](https://github.com/nnexejen/YaTube/actions/workflows/ci.yml) 
+[![codecov](https://codecov.io/gh/nnexejen/YaTube/branch/master/graph/badge.svg)](https://codecov.io/gh/nnexejen/YaTube) 
+[![Code style: flake8](https://img.shields.io/badge/code%20style-flake8-orange.svg)](https://flake8.pycqa.org/) 
+[![Python 3.9](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/)  
 - [Введение](#введение)
 - [Функционал проекта](#функционал-проекта)
 - [Используемые технологии](#используемые-технологии)
-- [Непрерывная интеграция (CI)](#непрерывная-интеграция-ci)
+- [CI/CD и безопасность](#ci-cd-и-безопасность)
 - [Переменные окружения](#переменные-окружения)
 - [Запуск приложения](#запуск-приложения)
 
@@ -10,7 +15,7 @@
 Проект YaTube представляет из себя упрощенную социальную сеть, инструмент для начинающих блогеров. 
 
 ## Функционал проекта
-- Расширенная регистрация пользователя.
+- Расширенная регистрация пользователей.
 - Публикация постов с возможностью добавления изображений.
 - Размещение постов в группах.
 - Создание групп (только для привилегированных пользователей).
@@ -19,33 +24,37 @@
 - Фильтр постов по группе.
 
 ## Используемые технологии
-При создании и разворачивании приложения использовались следующие технологии:
-- ```python 3.9```
-- ```django 2.2.16```
-- ```gunicorn 20.0.4```
-- ```docker```
-- ```minikube```
-- ```helm```
+При создании, тестировании и разворачивании приложения использовались следующие технологии:
+### Backend & Core:
+- `Python 3.9`
+- `Django 2.2.16`
+- `Gunicorn` (WSGI сервер)
+- `PostgreSQL` (База данных)
+### Infrastructure & DevOps:
+- `Docker` & `Docker Compose` (Контейнеризация)
+- `Minikube` & `Helm` (Оркестрация и деплой)
+- `GitHub Actions` (CI/CD)
+- `Trivy` (Сканер уязвимостей)
+- `Codecov` (Метрики качества кода)
+### Testing & Quality:
+- `pytest`, `pytest-django`
+- `flake8` (Линтер)
+- `Faker`, `mixer` (Генерация тестовых данных)
 
-## Непрерывная интеграция (CI)
+## CI/CD и безопасность
 
-Проект настроен с использованием **GitHub Actions** для автоматической проверки кода при каждом пуше и создании пул-реквеста.
+Проект использует **GitHub Actions** для полной автоматизации проверки кода, сборки образов и контроля безопасности.  
 
-### Статус пайплайна
+### Пайплайн (Workflow)
 
-[![CI](https://github.com/nnexejen/YaTube/actions/workflows/ci.yml/badge.svg)](https://github.com/nnexejen/YaTube/actions/workflows/ci.yml)  
-  
-[![Code style: flake8](https://img.shields.io/badge/code%20style-flake8-orange.svg)](https://flake8.pycqa.org/)  
-  
-[![Python 3.9](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/)
+Файл конфигурации: `.github/workflows/ci.yml`  
+При каждом `push` или `pull request` запускается следующая цепочка задач:
+1. **lint** (`flake8`) - проверка стиля кода (PEP8). Исключает миграции и автогенерируемые файлы.     
+2. **test** (`pytest`) - запуск автотестов с подключением к PostgreSQL.  
+3. **docker-build** (`Docker`) - сборка оптимизированного Multi-stage образа. 
+4. **coverage** (`Codecov`) - генерация отчета о покрытии кода тестами.  
+5. **security** (`Trivy`) - сканирование образа на уязвимости (CVE). Блокирует релиз при критических ошибках.  
 
-
-### Задачи пайплайна
-
-Файл конфигурации: `.github/workflows/ci.yml`
-
-1. `lint` - проверка стиля кода через `flake8` с настройками из `.flake8`. Исключает миграции и автогенерируемые файлы. Запускается при каждом `push` и `pull_request`.  
-2. `test` - запуск тестов через `pytest` с подключением к PostgreSQL. Генерирует отчёт о покрытии (`coverage.xml`). Запускается при каждом `push` и `pull_request`.
 
 ### Локальная проверка пайплайна
 
@@ -76,7 +85,7 @@ act -j test \
 ## Переменные окружения
 В директории infra репозитория находятся файлы ```all.env``` и ```web.env```, содержащие следующие переменные окружения:\
 ```DEBUG``` будет ли включен режим отладки (небезопасно)\
-```SECRET_KEY``` секретный ключ, при помощи которого будут генерироваться CRSF-токены\
+```SECRET_KEY``` секретный ключ, при помощи которого будут генерироваться CSRF-токены\
 ```DB_NAME=postgres``` имя базы данных\
 ```POSTGRES_USER=postgres``` логин для подключения к базе данных\
 ```POSTGRES_PASSWORD=postgres``` пароль для подключения к БД (установите свой)\

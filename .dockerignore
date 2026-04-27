@@ -1,0 +1,21 @@
+# yatube/.dockerignore
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+.venv/
+venv/
+env/
+.git/
+.github/
+infra/
+tests/
+*.md
+.flake8
+run-act.sh
+Dockerfile
+.dockerignore
+*.log
+*.sqlite3
+media/
+staticfiles/
