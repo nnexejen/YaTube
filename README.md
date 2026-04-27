@@ -2,13 +2,14 @@
 - [Введение](#введение)
 - [Функционал проекта](#функционал-проекта)
 - [Используемые технологии](#используемые-технологии)
+- [Непрерывная интеграция (CI)](#непрерывная-интеграция-ci)
 - [Переменные окружения](#переменные-окружения)
 - [Запуск приложения](#запуск-приложения)
 
 ## Введение
 Проект YaTube представляет из себя упрощенную социальную сеть, инструмент для начинающих блогеров. 
 
-## Функционал проекта:
+## Функционал проекта
 - Расширенная регистрация пользователя.
 - Публикация постов с возможностью добавления изображений.
 - Размещение постов в группах.
@@ -32,8 +33,10 @@
 
 ### Статус пайплайна
 
-[![CI](https://github.com/nnexejen/YaTube/actions/workflows/ci.yml/badge.svg)](https://github.com/nnexejen/YaTube/actions/workflows/ci.yml)
-[![Code style: flake8](https://img.shields.io/badge/code%20style-flake8-orange.svg)](https://flake8.pycqa.org/)
+[![CI](https://github.com/nnexejen/YaTube/actions/workflows/ci.yml/badge.svg)](https://github.com/nnexejen/YaTube/actions/workflows/ci.yml)  
+  
+[![Code style: flake8](https://img.shields.io/badge/code%20style-flake8-orange.svg)](https://flake8.pycqa.org/)  
+  
 [![Python 3.9](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/)
 
 
