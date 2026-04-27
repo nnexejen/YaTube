@@ -11,10 +11,8 @@ STR_TO_BOOL = {
 
 DEBUG = STR_TO_BOOL[os.getenv('DEBUG', default='FALSE').upper()]
 
-#ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '[::1]', 'web']
+# ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '[::1]', 'web']
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
-
-
 
 # Application definition
 

@@ -19,13 +19,57 @@
 
 ## Используемые технологии
 При создании и разворачивании приложения использовались следующие технологии:
-- ```python 3.7```
+- ```python 3.9```
 - ```django 2.2.16```
 - ```gunicorn 20.0.4```
 - ```docker```
 - ```minikube```
 - ```helm```
 
+## Непрерывная интеграция (CI)
+
+Проект настроен с использованием **GitHub Actions** для автоматической проверки кода при каждом пуше и создании пул-реквеста.
+
+### Статус пайплайна
+
+[![CI](https://github.com/nnexejen/YaTube/actions/workflows/ci.yml/badge.svg)](https://github.com/nnexejen/YaTube/actions/workflows/ci.yml)
+[![Code style: flake8](https://img.shields.io/badge/code%20style-flake8-orange.svg)](https://flake8.pycqa.org/)
+[![Python 3.9](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/)
+
+
+### Задачи пайплайна
+
+Файл конфигурации: `.github/workflows/ci.yml`
+
+1. `lint` - проверка стиля кода через `flake8` с настройками из `.flake8`. Исключает миграции и автогенерируемые файлы. Запускается при каждом `push` и `pull_request`.  
+2. `test` - запуск тестов через `pytest` с подключением к PostgreSQL. Генерирует отчёт о покрытии (`coverage.xml`). Запускается при каждом `push` и `pull_request`.
+
+### Локальная проверка пайплайна
+
+Для отладки CI-конфига без отправки кода на GitHub используйте утилиту [`act`](https://github.com/nektos/act) — эмулятор GitHub Actions на базе Docker.
+
+#### Требования
+- Установленный Docker
+- Утилита `act` ([инструкция по установке](https://nektosact.com/installation/))
+
+#### Запуск тестов локально
+
+Быстрый запуск через скрипт:
+```
+./run-act.sh
+```
+Или вручную с параметрами:
+```
+act -j test \
+  -P ubuntu-latest=catthehacker/ubuntu:act-latest \
+  -s DB_NAME=yatube \
+  -s POSTGRES_PASSWORD=postgres \
+  -s SECRET_KEY=test123 \
+  -s DB_HOST=localhost \
+  -s POSTGRES_USER=postgres \
+  -s DB_PORT=5432 \
+  -s DEBUG=false
+```
 ## Переменные окружения
 В директории infra репозитория находятся файлы ```all.env``` и ```web.env```, содержащие следующие переменные окружения:\
 ```DEBUG``` будет ли включен режим отладки (небезопасно)\
